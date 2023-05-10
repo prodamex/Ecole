@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model cours {
+  id            Int        @id @default(autoincrement())
+  nom_cours     String     @db.VarChar(255)
+  id_professeur Int
+  professeur    professeur @relation(fields: [id], references: [id], onUpdate: Restrict, map: "cours_fk_1")
+  avis          avis[]
+  planning      planning[]
+
+  @@index([id], map: "id_professeur")
+}
+
+model programme {
+  id                Int            @id @default(autoincrement())
+  nom               String         @db.VarChar(255)
+  id_type_programme Int
+  apprentissage     Boolean
+  type_programme    type_programme @relation(fields: [id], references: [id], onUpdate: Restrict, map: "programme_fk_1")
+
+  @@index([id], map: "id_type_programme")
+}
+
+model type_programme {
+  id        Int         @id @default(autoincrement())
+  nom       String?     @db.VarChar(255)
+  programme programme[]
+}
+
+model avis {
+  id       Int      @id @default(autoincrement())
+  valeur   Decimal? @db.Decimal(3, 1)
+  id_eleve Int
+  id_cours Int
+  eleve    eleve    @relation(fields: [id], references: [id], onUpdate: Restrict, map: "avis_fk_1")
+  cours    cours    @relation(fields: [id], references: [id], onUpdate: Restrict, map: "avis_fk_2")
+
+  @@index([id_cours], map: "id_cours")
+  @@index([id_eleve], map: "id_eleve")
+}
+
+model planning {
+  id             Int       @id @default(autoincrement())
+  jour_planning  DateTime? @db.Date
+  debut_planning DateTime? @db.Time(0)
+  fin_planning   DateTime? @db.Time(0)
+  id_cours       Int
+  cours          cours     @relation(fields: [id], references: [id], onUpdate: Restrict, map: "planning_fk_1")
+
+  @@index([id], map: "id_cours")
+}
+
+model eleve {
+  id     Int     @id @default(autoincrement())
+  prenom String? @db.VarChar(255)
+  nom    String? @db.VarChar(255)
+  avis   avis[]
+}
+
+model professeur {
+  id     Int     @id @default(autoincrement())
+  prenom String? @db.VarChar(255)
+  nom    String? @db.VarChar(255)
+  cours  cours[]
+}
