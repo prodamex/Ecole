@@ -15,13 +15,19 @@ app.use(
 );
 
 (async () => {
-  const res = await prisma.eleve.create({
-    data: {
-      prenom: "test",
-      nom: "test",
-    },
-  });
-  console.log(res);
+  // const res = await prisma.cours.findUnique({
+  //   where: {
+  //     id: parseInt(1),
+  //   },
+  //   include: {
+  //     avis: {
+  //       where: { id_cours: 1 },
+  //     },
+  //   },
+  // });
+  // const sum = res.avis.reduce((a, b) => a + parseFloat(b.valeur), 0);
+  // const avg = sum / res.avis.length || 0;
+  // console.log(sum);
 })();
 
 app.listen(3000, () => console.log("server is running on port 3000..."));

@@ -4,11 +4,11 @@ const prisma = new PrismaClient();
 const definitions = `
 type Cours {
   id: ID!
-  nom_cours: String!
+  nom: String!
   id_professeur: ID!
   professeur : Professeur
-  avis : Avis
-  planning : Planning
+  avis : [Avis]
+  planning : [Planning]
 }
 `;
 
@@ -19,8 +19,8 @@ cours(id: ID!): Cours
 
 const mutation = `
 ajouterCours(nom: String!, id_professeur: ID!): Cours
-modifierCours(nom: String!, id_professeur: ID!, id_cours: ID!): Cours
-supprimerCours(id_cours: Int!): Cours
+modifierCours(nom: String!, id_professeur: ID!, id: ID!): Cours
+supprimerCours(id: Int!): Cours
 `;
 
 const resolvers = {
@@ -53,19 +53,19 @@ const resolvers = {
       },
     });
   },
-  modifierCours: ({ nom, id_professeur, id_cours }) => {
+  modifierCours: ({ nom, id_professeur, id }) => {
     return prisma.cours.update({
-      where: { id_cours: parseInt(id_cours) },
+      where: { id: parseInt(id) },
       data: {
         nom: nom,
         id_professeur: parseInt(id_professeur),
       },
     });
   },
-  supprimerCours: ({ id_cours }) => {
+  supprimerCours: ({ id }) => {
     return prisma.cours.delete({
       where: {
-        id_cours: parseInt(id_cours),
+        id: parseInt(id),
       },
     });
   },

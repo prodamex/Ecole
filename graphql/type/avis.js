@@ -1,13 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const average = (aviss) => {
-  const lenght = aviss.length;
-  let sum = 0;
-  aviss.forEach((r) => {
-    sum += parseFloat(r.valeur);
-  });
-  return sum / lenght;
+const moyen = (aviss) => {
+  const sum = aviss.reduce((a, b) => a + parseFloat(b.valeur), 0);
+  const avg = sum / aviss.length || 0;
+  return avg.toFixed(2);
 };
 
 const definitions = `
@@ -24,8 +21,8 @@ type Avis {
 const query = `
 aviss: [Avis]
 avis( id: ID!): Avis
-eleveAverageGrades(id_eleve: ID!) : Float
-coursAverageGrades(id_cours: ID!) : Float
+moyenEleve(id_eleve: ID!) : Float
+moyenCours(id_cours: ID!) : Float
 `;
 
 const mutation = `
@@ -63,7 +60,7 @@ const resolvers = {
       },
     });
   },
-  modifierAvis: ({ valeur, id_eleve, id_cours }) => {
+  modifierAvis: ({ valeur, id_eleve, id_cours, id }) => {
     return prisma.avis.update({
       where: { id: parseInt(id) },
       data: {
@@ -80,35 +77,29 @@ const resolvers = {
       },
     });
   },
-  eleveAverageGrades: async ({ id_eleve }) => {
+  moyenEleve: async ({ id_eleve }) => {
     const result = await prisma.eleve.findFirst({
       where: {
-        id_eleve: parseInt(id_eleve),
+        id: parseInt(id_eleve),
       },
       include: {
         avis: true,
       },
     });
-    if (result.avis?.length > 0) {
-      return average(result.avis);
-    } else {
-      return 0;
-    }
+    return moyen(result.avis);
   },
-  coursAverageGrades: async ({ id_cours }) => {
+  moyenCours: async ({ id_cours }) => {
     const result = await prisma.cours.findUnique({
       where: {
-        id_cours: parseInt(id_cours),
+        id: parseInt(id_cours),
       },
       include: {
-        avis: true,
+        avis: {
+          where: { id_cours: parseInt(id_cours) },
+        },
       },
     });
-    if (result.avis?.length > 0) {
-      return average(result.avis);
-    } else {
-      return 0;
-    }
+    return moyen(result.avis);
   },
 };
 

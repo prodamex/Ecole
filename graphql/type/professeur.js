@@ -6,7 +6,7 @@ type Professeur {
   id: ID!
   prenom: String!
   nom: String!
-  course: [Cours]
+  cours: [Cours]
 }
 `;
 
@@ -28,14 +28,14 @@ const resolvers = {
         id: parseInt(id),
       },
       include: {
-        course: true,
+        cours: true,
       },
     });
   },
   professeurs: () => {
     return prisma.professeur.findMany({
       include: {
-        course: true,
+        cours: true,
       },
     });
   },

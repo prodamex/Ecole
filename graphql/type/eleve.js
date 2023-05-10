@@ -15,8 +15,6 @@ type Eleve {
 const query = `
 eleves: [Eleve]
 eleve(id: ID!): Eleve
-compteEleveParTypeProgramme(idProgramType: ID!): Int
-compteEleveParProgramme(idProgram: ID!): Int
 `;
 
 const mutation = `
@@ -66,45 +64,6 @@ const resolvers = {
         id: parseInt(id),
       },
     });
-  },
-  compteEleveParTypeProgramme: async ({ idProgramType }) => {
-    const result = await prisma.programtype.findUnique({
-      where: { idProgramType: parseInt(idProgramType) },
-      include: {
-        program: {
-          include: {
-            programgroup: {
-              include: {
-                eleve: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    return result.program.reduce((acc, pr) => {
-      return (
-        acc +
-        pr.programgroup.reduce((acc2, prg) => {
-          return acc2 + (prg.eleve ? prg.eleve.length : 0);
-        }, 0)
-      );
-    }, 0);
-  },
-  compteEleveParProgramme: async ({ idProgram }) => {
-    const result = await prisma.program.findUnique({
-      where: { idProgram: parseInt(idProgram) },
-      include: {
-        programgroup: {
-          include: {
-            eleve: true,
-          },
-        },
-      },
-    });
-    return result.programgroup.reduce((acc, prg) => {
-      return acc + (prg.eleve ? prg.eleve.length : 0);
-    }, 0);
   },
 };
 

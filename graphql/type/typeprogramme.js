@@ -22,7 +22,7 @@ supprimerTypeProgramme(id: Int!): typeProgramme
 
 const resolvers = {
   typeProgramme: ({ id }) => {
-    return prisma.typeProgramme.findUnique({
+    return prisma.type_programme.findUnique({
       where: {
         id: parseInt(id),
       },
@@ -30,25 +30,25 @@ const resolvers = {
     });
   },
   typeProgrammes: () => {
-    return prisma.typeProgramme.findMany({
+    return prisma.type_programme.findMany({
       include: { programme: true },
     });
   },
   ajouterTypeProgramme: ({ nom }) => {
-    return prisma.typeProgramme.create({
+    return prisma.type_programme.create({
       data: {
         nom: nom,
       },
     });
   },
   modifierTypeProgramme: ({ id, nom }) => {
-    return prisma.typeProgramme.update({
+    return prisma.type_programme.update({
       where: { id: parseInt(id) },
       data: { nom: nom },
     });
   },
   supprimerTypeProgramme: ({ id }) => {
-    return prisma.typeProgramme.delete({
+    return prisma.type_programme.delete({
       where: {
         id: parseInt(id),
       },

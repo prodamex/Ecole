@@ -16,8 +16,8 @@ programme(id: ID!): Programme
 `;
 
 const mutation = `
-ajouterProgramme(nom: String!, apprentissage: Boolean, id_type_programmeme: Int!): Programme
-modifierProgramme(id: Int!, apprentissage: Boolean, id_type_programmeme:Int!, nom: String): Programme
+ajouterProgramme(nom: String!, apprentissage: Boolean!, id_type_programme: Int!): Programme
+modifierProgramme(id: Int!, apprentissage: Boolean!, id_type_programme:Int!, nom: String): Programme
 supprimerProgramme(id: Int!): Programme
 `;
 
@@ -28,27 +28,27 @@ const resolvers = {
         id: parseInt(id),
       },
       include: {
-        programmetype: true,
+        type_programme: true,
       },
     });
   },
   programmes: () => {
     return prisma.programme.findMany({
       include: {
-        programmetype: true,
+        type_programme: true,
       },
     });
   },
-  ajouterProgrammeme: ({ nom, apprentissage, id_type_programmeme }) => {
+  ajouterProgramme: ({ nom, apprentissage, id_type_programme }) => {
     return prisma.programme.create({
       data: {
         nom: nom,
         apprentissage: apprentissage,
-        id_type_programmeme: parseInt(id_type_programmeme),
+        id_type_programme: parseInt(id_type_programme),
       },
     });
   },
-  modifierProgrammeme: ({ id, nom, apprentissage, id_type_programmeme }) => {
+  modifierProgramme: ({ id, nom, apprentissage, id_type_programme }) => {
     return prisma.programme.update({
       where: {
         id: parseInt(id),
@@ -56,11 +56,11 @@ const resolvers = {
       data: {
         nom: nom,
         apprentissage: apprentissage,
-        id_type_programmeme: id_type_programmeme,
+        id_type_programme: id_type_programme,
       },
     });
   },
-  supprimerProgrammeme: ({ id }) => {
+  supprimerProgramme: ({ id }) => {
     return prisma.programme.delete({
       where: {
         id: parseInt(id),
